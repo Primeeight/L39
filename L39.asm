@@ -1,0 +1,62 @@
+section .text
+        global main
+%macro print 2	;accept two paramters.
+	;preserve the registers.
+	push rdi
+        push rax
+        push rsi
+        push rdx
+
+        mov rdi, rax		
+        mov rax, 1		;file writing
+        mov rsi, %1		;pointer to data.
+        mov rdx, %2		;pointer to size
+        syscall
+
+        ;restore the registers.
+        pop rdx
+        pop rsi
+        pop rax
+        pop rdi
+%endmacro
+
+main:			
+        mov rax, 2 		;open file in read/write.
+        mov rdi, filename	;store the filename in rdi
+        mov rsi, 65		;move read + write into rsi		
+        mov rdx, 0777o		;give permissions to all.
+        syscall		
+write: 	 	 		;call a macro for each value.
+	print var1, 1
+	print var2, 2
+	print var3, 4
+	print var4, 8
+        print var5, 10
+	print var6, 16
+        print var7, 32
+        print var8, 64
+
+
+
+
+
+close:
+        mov rdi, rax 		
+        mov rax, 3		;close the file.
+        syscall
+exit:
+        xor eax, eax		;return
+        ret
+
+section .data
+        filename db "results.txt",0        ;file name.
+	var1 db    "B",0,10		;byte representation.
+        var2 dw    "2B",0,10            ;word representation.
+	var3 dd    "4Byt",0,10          ;double word representation.
+        var4 dq    "8ByteNow",0,10      ;qword representation.
+	var5 dt    "10ByteHere"		;tword representation.
+        var6 do    "16TotalBytesHere"   ;oword representation
+        var7 dy    "   32 He is the prince that was "     ;yword representation
+        var8 dz    "64 promised and his is the song of ice and fire."     ;zword representation
+        ;missing do, dy, and dz
+
